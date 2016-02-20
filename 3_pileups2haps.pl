@@ -13,13 +13,10 @@ use Data::Dumper;
 
 ##usage##
 if(@ARGV < 1) {
-	help();
+	print "WRONG argument submitted: try 3_pileups2haps.pl -h\|-help\n";
 	exit;
 } elsif ($ARGV[0] eq '-h' || $ARGV[0] eq '-help') {
 	help();
-	exit;
-} else {
-	print "WRONG argument submitted: try 3_pileups2haps.pl -h\|-help\n";
 	exit;
 }
 

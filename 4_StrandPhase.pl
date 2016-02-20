@@ -13,13 +13,10 @@ use Statistics::Basic qw(:all);
 
 ##usage##
 if(@ARGV < 1) {
-	help();
+	print "\nNo argument submitted: try 4_StrandPhase.pl -h\|-help\n\n";
 	exit;
 } elsif ($ARGV[0] eq '-h' || $ARGV[0] eq '-help') {
 	help();
-	exit;
-} else {
-	print "WRONG argument submitted: try 4_StrandPhase.pl -h\|-help\n";
 	exit;
 }
 
@@ -37,6 +34,7 @@ my %HoA1 = ();
 my %HoA2 = ();
 
 #For a given chromosome find pair of haplotypes with most overlaps and with highest number of mismatched heterozygous positions 
+warn "Initializing consensus Haplotypes...\n";
 foreach my $a (0..$#files) {
     foreach my $b ($a+1..$#files) {
 
@@ -65,6 +63,7 @@ foreach my $a (0..$#files) {
 	close $fh2;
     }
 }
+warn "DONE...\n";
 
 #haplotypes with most overlaps and with highest number of mismatched heterozygous positions are used as an anchor haplotypes to initialize consensus haplotypes
 open my ($fh1), '<', $file1 or die "Can't open file: $!\n";
@@ -264,10 +263,11 @@ while(scalar(@sorted_files) != 0) {
 
 	my $perc_diff = ((abs($diff1-$diff2))/($diff1+$diff2)/2)*100;
 	
-	print "$highest_val\n";
-	print "$match1 $mismatch1 $count1 $diff1\n";
-	print "$match2 $mismatch2 $count2 $diff2\n";
-	print "$perc_diff\n";
+	warn "Processing $highest_val...\n";	
+	#print "$highest_val\n";
+	#print "$match1 $mismatch1 $count1 $diff1\n";
+	#print "$match2 $mismatch2 $count2 $diff2\n";
+	#print "$perc_diff\n";
 
 	next if $diff1 == $diff2 and push @process_later, $highest_val;
 	next if $perc_diff < 25 and push @process_later, $highest_val;
@@ -313,6 +313,9 @@ $count2 = 0;
 
 open my ($out1), '>', 'haplo_1' or die "Can't open file: $!\n";
 open my ($out2), '>', 'haplo_2' or die "Can't open file: $!\n";
+
+print $out1 "Pos\tConsensus_base\tCoverage\tBases\tMapq\tBaseq\tCells_IDs\tWeigth\tEntropy\n";
+print $out2 "Pos\tConsensus_base\tCoverage\tBases\tMapq\tBaseq\tCells_IDs\tWeigth\tEntropy\n";
 
 open my ($out3), '>', 'Phasing_info_perCell' or die "Can't open file: $!\n";
 
@@ -407,7 +410,12 @@ foreach my $filename (sort keys %hap2_files) {
 	print $out3 "hap2\n"; 
 }
 
-print "@process_later\n"; 
+warn "Phasing DONE...\n";
+
+if (@process_later) {
+	open my ($out4), '>', 'Discordant_cells' or die "Can't open file: $!\n";
+	print $out4 "@process_later\n";
+} 
 
 ######################################################################################
 				## Subroutines ##

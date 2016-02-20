@@ -10,13 +10,10 @@ use Data::Dumper;
 
 ##usage##
 if(@ARGV < 1) {
-	help();
+	rint "WRONG argument submitted: try 5_haplo2bam.pl -h\|-help\n";
 	exit;
 } elsif ($ARGV[0] eq '-h' || $ARGV[0] eq '-help') {
 	help();
-	exit;
-} else {
-	print "WRONG argument submitted: try 5_haplo2bam.pl -h\|-help\n";
 	exit;
 }
 
